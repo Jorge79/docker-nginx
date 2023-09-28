@@ -5,13 +5,15 @@ services:
     build:
       context: ./app
       dockerfile: Dockerfile
+    image: node
     container_name: node
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s npm install
     networks:
       - nodenet
     volumes:
       - ./app:/usr/src/app
-    ports:
-      - "3000:3000"
+    depends_on:
+      - db
 
   db:
     image: mysql:5.7
@@ -26,6 +28,16 @@ services:
       - MYSQL_ROOT_PASSWORD=root
     networks: 
       - nodenet
+
+  nginx:
+    build: 
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: nginx
+    networks: 
+      - nodenet
+    ports: 
+      - "3000:3000"
 
 networks:
   nodenet:
