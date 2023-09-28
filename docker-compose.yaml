@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     image: node
     container_name: node
-    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s npm install
+    entrypoint: dockerize -wait tcp://db:3306 -timeout 20s sh -c "npm install && node index.js"
     networks:
       - nodenet
     volumes:
@@ -23,6 +23,7 @@ services:
     tty: true
     volumes: 
       - ./mysql:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     environment: 
       - MYSQL_DATABASE=nodedb
       - MYSQL_ROOT_PASSWORD=root
@@ -37,7 +38,7 @@ services:
     networks: 
       - nodenet
     ports: 
-      - "3000:3000"
+      - "8080:80"
 
 networks:
   nodenet:

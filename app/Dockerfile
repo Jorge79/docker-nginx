@@ -1,10 +1,8 @@
-FROM node:18.17
+FROM node:18.17-slim
 
 WORKDIR /usr/src/app
 
 COPY . .
-
-EXPOSE 3000
 
 RUN apt-get update && apt-get install -y wget
 
